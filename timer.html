@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agile Timer</title>
+
+  <link rel="stylesheet" type="text/css" href="pietimer.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery.pietimer.js"></script>
+
+  <script type="text/javascript">
+
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+var Time = getParameterByName('Time');
+
+if ( Time != "") { 
+       var duration = Time * 60;
+	} else {
+	   duration = 900;
+	}
+	
+var Meeting = getParameterByName('Meeting');
+if ( Meeting == "") { 
+       Meeting = "Daily StandUp";
+	}
+	   
+    $(function() {
+      $('#timer1').pietimer({
+          timerSeconds: duration,
+          color: '#8B0000',
+          fill: false,
+          showPercentage: true,
+          callback: function() {
+              alert("End of Meeting!");
+              $('#timer1').pietimer('reset');
+          }
+      });
+    });
+	function get_action(form) {
+        form.action = "Timerform_action";
+    }
+	function radio_onload(){
+document.getElementById(Meeting).checked="checked";
+}
+
+  </script>
+
+</head>
+<body>
+<h1 id="Meeting"></h1>
+<script>
+document.getElementById("Meeting").innerHTML = "Agile Timer for " + Meeting + " meeting of " + duration/60 + " minutes duration";
+</script>
+  <div id="timer1"></div>
+  <div id="form1">
+	<form name="meetingTypeForm" onsubmit="get_action(this) method="post">
+		<input type="radio" name="Meeting" id="Daily StandUp" value="Daily StandUp">StandUp<br>
+		<input type="radio" name="Meeting" id="Sprint Planning" value="Sprint Planning">Sprint Planning<br>
+		<input type="radio" name="Meeting" id="Back Log Refinement" value="Back Log Refinement">Back Log Refinement<br>
+		<input type="radio" name="Meeting" id="Sprint Review" value="Sprint Review">Sprint Review<br>
+		<input type="radio" name="Meeting" id="Retrospective" value="Retrospective">Retrospective<br>
+		<input type="radio" name="Meeting" id="Other" value="a" checked>Other <br>
+		Duration: <input type="number" max="120" name="Time" id="TimeInput" style="width: 40px">
+		<script>document.getElementById("TimeInput").defaultValue = duration/60;
+			radio_onload();
+		</script>
+	<input type="submit" value="Submit">
+	</form>
+</div>
+<script>
+var rad = document.meetingTypeForm.Meeting;
+var prev = null;
+for(var i = 0; i < rad.length; i++) {
+    rad[i].onclick = function() {
+        (prev)? console.log(prev.value):null;
+        if(this !== prev) {
+            prev = this;
+        }
+        document.getElementById("Meeting").innerHTML = "Agile Timer for " + this.value + " meeting of " + duration/60 + " minutes duration";
+		Meeting = this.value
+		
+    };
+}
+
+</script>
+
+</body>
+</html>
